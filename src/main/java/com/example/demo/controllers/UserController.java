@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/user")
 public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
-
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -45,14 +44,14 @@ public class UserController {
 
         if (createUserRequest.getPassword().length() < 7 ||
                 !createUserRequest.getPassword().equals(createUserRequest.getConfirmPassword())) {
-            log.error("Account Not Created due to Password: {} not meeting requirements", createUserRequest.getUsername());
+            log.error(
+                    "UserController :: createUser() :: Password Requirements Error for User {}",
+                    createUserRequest.getUsername());
             return ResponseEntity.badRequest().build();
         }
         user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));
         userRepository.save(user);
-        log.info("Account Created with username: {}", createUserRequest.getUsername());
-
+        log.info("UserController :: createUser() :: Account Created for User: {}", createUserRequest.getUsername());
         return ResponseEntity.ok(user);
     }
-
 }
