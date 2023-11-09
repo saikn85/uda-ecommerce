@@ -16,12 +16,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/user")
 public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-    @Autowired
-    private CartRepository cartRepository;
+    private final UserRepository userRepository;
+    private final CartRepository cartRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    public UserController(UserRepository userRepository,
+                          CartRepository cartRepository,
+                          BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userRepository = userRepository;
+        this.cartRepository = cartRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
     @GetMapping("/id/{id}")
     public ResponseEntity<User> findById(@PathVariable Long id) {
@@ -41,6 +46,13 @@ public class UserController {
         Cart cart = new Cart();
         cartRepository.save(cart);
         user.setCart(cart);
+
+        if (createUserRequest.getPassword() == null || createUserRequest.getConfirmPassword() == null){
+            log.error(
+                    "UserController :: createUser() :: Password Requirements Error for User {}",
+                    createUserRequest.getUsername());
+            return ResponseEntity.badRequest().build();
+        }
 
         if (createUserRequest.getPassword().length() < 7 ||
                 !createUserRequest.getPassword().equals(createUserRequest.getConfirmPassword())) {
