@@ -1,0 +1,156 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > OrderController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.demo.controllers</a>
+</div>
+
+<h1>Coverage Summary for Class: OrderController (com.example.demo.controllers)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">OrderController</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/18)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.demo.controllers;
+&nbsp;
+&nbsp;import com.example.demo.model.persistence.User;
+&nbsp;import com.example.demo.model.persistence.UserOrder;
+&nbsp;import com.example.demo.model.persistence.repositories.OrderRepository;
+&nbsp;import com.example.demo.model.persistence.repositories.UserRepository;
+&nbsp;import org.slf4j.Logger;
+&nbsp;import org.slf4j.LoggerFactory;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/api/order&quot;)
+&nbsp;public class OrderController {
+<b class="nc">&nbsp;    private static final Logger log = LoggerFactory.getLogger(OrderController.class);</b>
+&nbsp;    private final UserRepository userRepository;
+&nbsp;    private final OrderRepository orderRepository;
+&nbsp;
+<b class="nc">&nbsp;    public OrderController(UserRepository userRepository, OrderRepository orderRepository) {</b>
+<b class="nc">&nbsp;        this.userRepository = userRepository;</b>
+<b class="nc">&nbsp;        this.orderRepository = orderRepository;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/submit/{username}&quot;)
+&nbsp;    public ResponseEntity&lt;UserOrder&gt; submit(@PathVariable String username) {
+<b class="nc">&nbsp;        User user = userRepository.findByUsername(username);</b>
+<b class="nc">&nbsp;        if (user == null) {</b>
+<b class="nc">&nbsp;            log.error(&quot;OrderController :: submit() :: User {} is null&quot;, username);</b>
+<b class="nc">&nbsp;            return ResponseEntity.notFound().build();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        UserOrder order = UserOrder.createFromCart(user.getCart());</b>
+<b class="nc">&nbsp;        orderRepository.save(order);</b>
+<b class="nc">&nbsp;        log.info(</b>
+&nbsp;                &quot;OrderController :: submit() :: Order submitted for User {} with Order ID {}&quot;,
+&nbsp;                username,
+<b class="nc">&nbsp;                order.getId());</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(order);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/history/{username}&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;UserOrder&gt;&gt; getOrdersForUser(@PathVariable String username) {
+<b class="nc">&nbsp;        User user = userRepository.findByUsername(username);</b>
+<b class="nc">&nbsp;        if (user == null) {</b>
+<b class="nc">&nbsp;            log.error(&quot;OrderController :: getOrdersForUser() :: User {} is null&quot;, username);</b>
+<b class="nc">&nbsp;            return ResponseEntity.notFound().build();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return ResponseEntity.ok(orderRepository.findByUser(user));</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-11-09 10:58</div>
+</div>
+</body>
+</html>

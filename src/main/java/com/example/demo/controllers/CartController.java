@@ -24,12 +24,15 @@ import java.util.stream.IntStream;
 @RequestMapping("/api/cart")
 public class CartController {
     private static final Logger log = LoggerFactory.getLogger(CartController.class);
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private CartRepository cartRepository;
-    @Autowired
-    private ItemRepository itemRepository;
+    private final UserRepository userRepository;
+    private final CartRepository cartRepository;
+    private final ItemRepository itemRepository;
+
+    public CartController(UserRepository userRepository, CartRepository cartRepository, ItemRepository itemRepository) {
+        this.userRepository = userRepository;
+        this.cartRepository = cartRepository;
+        this.itemRepository = itemRepository;
+    }
 
     @PostMapping("/addToCart")
     public ResponseEntity<Cart> addToCart(@RequestBody ModifyCartRequest request) {
